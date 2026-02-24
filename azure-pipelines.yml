@@ -8,11 +8,7 @@ variables:
   imageName: 'nodegoat-app'
 
 steps:
-- script: |
-    docker run --rm aquasec/trivy fs \
-      --exit-code 1 \
-      --severity CRITICAL \
-      --format table .
+- script: docker run --rm -v $(System.DefaultWorkingDirectory):/src aquasec/trivy fs --exit-code 1 --severity CRITICAL --format table /src
   displayName: 'Trivy File System Scan'
 
 - task: Docker@2
@@ -25,8 +21,5 @@ steps:
       $(Build.BuildId)
       latest
 
-- script: |
-    docker run --rm aquasec/trivy image \
-      --severity HIGH,CRITICAL \
-      $(imageName):$(Build.BuildId)
+- script: docker run --rm aquasec/trivy image --severity HIGH,CRITICAL $(imageName):$(Build.BuildId)
   displayName: 'Trivy Image Scan'
