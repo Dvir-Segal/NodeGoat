@@ -8,7 +8,7 @@ variables:
   imageName: 'nodegoat-app'
 
 steps:
-- script: docker run --rm -v $(System.DefaultWorkingDirectory):/src aquasec/trivy fs --severity High,CRITICAL --format table /src
+- script: docker run --rm -v $(System.DefaultWorkingDirectory):/src aquasec/trivy fs --severity HIGH,CRITICAL --format table /src
   displayName: 'Trivy File System Scan'
 
 # - task: Docker@2
