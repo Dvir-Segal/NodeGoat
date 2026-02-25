@@ -68,11 +68,10 @@ const index = (app, db) => {
 
     // Handle redirect for learning resources link
     app.get("/learn", isLoggedIn, (req, res) => {
+        const url = request.query.url;
         if (url.startsWith("https://")){
             return res.redirect(req.query.url);
         }
-        
-        
     });
 
     // Research Page
