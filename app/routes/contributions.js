@@ -29,9 +29,13 @@ function ContributionsHandler(db) {
 
         /*jslint evil: true */
         // Insecure use of eval() to parse inputs
-        const preTax = eval(req.body.preTax);
-        const afterTax = eval(req.body.afterTax);
-        const roth = eval(req.body.roth);
+        const preTax = Number(req.body.preTax);
+        const afterTax = Number(req.body.afterTax);
+        const roth = Number(req.body.roth);
+
+        if (isNaN(preTax) || isNaN(afterTax) || isNaN(roth)) {
+            return res.status(400).send("Invalid input: All tax fields must be valid numbers.");
+        }
 
         /*
         //Fix for A1 -1 SSJS Injection attacks - uses alternate method to eval
