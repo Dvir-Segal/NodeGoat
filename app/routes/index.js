@@ -70,11 +70,6 @@ const index = (app, db) => {
     app.get("/learn", isLoggedIn, (req, res) => {
         return res.redirect(req.query.url);
 
-        if (targetUrl.startsWith('/') && !targetUrl.startsWith('//')) {
-            return res.redirect(targetUrl);
-        } else {
-            return res.redirect('/');
-        }
     });
 
     // Research Page
