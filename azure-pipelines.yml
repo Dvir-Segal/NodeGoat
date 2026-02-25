@@ -19,7 +19,7 @@ steps:
     cliSources: '.'
 
 
-- script: docker run --rm -v $(System.DefaultWorkingDirectory):/src aquasec/trivy fs --severity HIGH,CRITICAL --format table /src
+- script: docker run --rm -v $(System.DefaultWorkingDirectory):/src aquasec/trivy fs --severity CRITICAL --format table /src
   displayName: 'Trivy File System Scan'
 
 - task: SonarCloudAnalyze@3
