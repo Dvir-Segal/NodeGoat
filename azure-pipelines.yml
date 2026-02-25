@@ -8,8 +8,27 @@ variables:
   imageName: 'nodegoat-app'
 
 steps:
+- task: SonarCloudPrepare@3
+  displayName: 'Prepare SonarCloud'
+  inputs:
+    SonarCloud: 'SonarToken'
+    organization: $(sonarOrganization)
+    scannerMode: 'CLI'
+    configMode: 'manual'
+    cliProjectKey: $(sonarProjectKey)
+    cliSources: '.'
+
+
 - script: docker run --rm -v $(System.DefaultWorkingDirectory):/src aquasec/trivy fs --severity HIGH,CRITICAL --format table /src
   displayName: 'Trivy File System Scan'
+
+- task: SonarCloudAnalyze@3
+  displayName: 'Run SonarCloud Analysis'
+
+- task: SonarCloudPublish@3
+  displayName: 'Publish Sonar Results'
+  inputs:
+    pollingTimeoutSec: '300'
 
 - task: Docker@2
   displayName: 'Build Docker Image'
@@ -20,11 +39,3 @@ steps:
     tags: |
       $(Build.BuildId)
       latest
-
-- script: |
-    docker save -o nodegoat-image.tar $(imageName):$(Build.BuildId)
-  displayName: 'Save Docker Image for Scanning'
-
-- script: |
-    docker run --rm -v $(System.DefaultWorkingDirectory):/src aquasec/trivy image --input /src/nodegoat-image.tar --severity HIGH,CRITICAL
-  displayName: 'Trivy Image Scan (via Tarball)'
