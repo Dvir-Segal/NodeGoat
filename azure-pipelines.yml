@@ -21,8 +21,5 @@ steps:
       $(Build.BuildId)
       latest
 
-- script: |
-    docker run --rm \
-      -v /var/run/docker.sock:/var/run/docker.sock \
-      aquasec/trivy image --severity HIGH,CRITICAL $(imageName):$(Build.BuildId)
+- script: docker run --rm -v //./pipe/docker_engine://./pipe/docker_engine aquasec/trivy image --severity HIGH,CRITICAL $(imageName):$(Build.BuildId)
   displayName: 'Trivy Image Scan'
