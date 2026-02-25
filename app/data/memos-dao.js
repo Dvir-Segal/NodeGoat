@@ -23,17 +23,14 @@ function MemosDAO(db) {
         memosCol.insert(memos, (err, result) => !err ? callback(null, result) : callback(err, null));
     };
 
-this.insert = (memo, callback) => {
+    this.getAllMemos = (callback) => {
 
-        const memoContent = (typeof memo === 'string') ? memo : String(memo);
-        const memos = {
-            memo: memoContent,
-            timestamp: new Date()
-        };
-
-        memosCol.insertOne(memos, (err, result) => {
+        memosCol.find({}).sort({
+            timestamp: -1
+        }).toArray((err, memos) => {
             if (err) return callback(err, null);
-            callback(null, result);
+            if (!memos) return callback("ERROR: No memos found", null);
+            callback(null, memos);
         });
     };
 
