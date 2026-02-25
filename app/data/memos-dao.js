@@ -14,22 +14,17 @@ function MemosDAO(db) {
 
     this.insert = (memo, callback) => {
 
-        // תיקון אבטחה: וידוא שהקלט הוא מחרוזת בלבד. 
-        // זה מונע מצב שבו המשתמש שולח אובייקט כמו {"$gt": ""} כדי לעקוף לוגיקה.
-        const safeMemo = (typeof memo === 'string') ? memo : String(memo);
-
+        // Create allocations document
         const memos = {
-            memo: safeMemo, // שימוש בערך המנוקה
+            memo,
             timestamp: new Date()
         };
 
-        // שימוש ב-insertOne (הסטנדרט המודרני והבטוח יותר)
-        memosCol.insertOne(memos, (err, result) => !err ? callback(null, result) : callback(err, null));
+        memosCol.insert(memos, (err, result) => !err ? callback(null, result) : callback(err, null));
     };
 
     this.getAllMemos = (callback) => {
-        // ב-find אנו משאירים אובייקט ריק כי המטרה היא להביא את הכל, 
-        // אך הסדר נקבע על ידינו ולא על ידי המשתמש.
+
         memosCol.find({}).sort({
             timestamp: -1
         }).toArray((err, memos) => {
@@ -41,4 +36,4 @@ function MemosDAO(db) {
 
 }
 
-module.exports = { MemosDAO };
+module.exports = { MemosDAO };
