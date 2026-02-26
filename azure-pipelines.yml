@@ -4,9 +4,6 @@ trigger:
 pool:
   name: 'Default'
 
-variables:
-  imageName: 'nodegoat-app'
-
 steps:
 - task: SonarCloudPrepare@3
   displayName: 'Prepare SonarCloud'
@@ -17,10 +14,6 @@ steps:
     configMode: 'manual'
     cliProjectKey: $(sonarProjectKey)
     cliSources: '.'
-
-
-# - script: docker run --rm -v $(System.DefaultWorkingDirectory):/src aquasec/trivy fs --severity CRITICAL --format table /src
-#   displayName: 'Trivy File System Scan'
 
 - task: SonarCloudAnalyze@3
   displayName: 'Run SonarCloud Analysis'
@@ -39,3 +32,11 @@ steps:
     tags: |
       $(Build.BuildId)
       latest
+
+- script: |
+    echo "Starting Trivy Image Scan..."
+    docker run --rm \
+      -v /var/run/docker.sock:/var/run/docker.sock \
+      aquasec/trivy:latest \
+      image --exit-code 0 --severity HIGH,CRITICAL $(imageName):latest
+  displayName: 'Trivy Security Scan'
