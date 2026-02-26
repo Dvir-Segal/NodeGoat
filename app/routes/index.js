@@ -68,24 +68,9 @@ const index = (app, db) => {
 
     // Handle redirect for learning resources link
     app.get("/learn", isLoggedIn, (req, res) => {
-        const url = req.query.url; // שים לב: שיניתי מ-request ל-req כדי למנוע ReferenceError
-
-        const allowedHosts = [
-            "owasp.org",
-            "github.com",
-            "nodesecurity.io"
-        ];
-
-        try {
-            const parsedUrl = new URL(url);
-            
-            if (parsedUrl.protocol === "https:" && allowedHosts.includes(parsedUrl.hostname)) {
-                return res.redirect(url);
-            } else {
-                return res.status(403).send("Unauthorized redirect destination");
-            }
-        } catch (e) {
-            return res.redirect("/");
+        const url = request.query.url;
+        if (url.startsWith("https://")){
+            return res.redirect(req.query.url);
         }
     });
 
